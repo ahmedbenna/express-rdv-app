@@ -17,6 +17,12 @@ async function getRDVById(req, res) {
     res.json(rdv);
 }
 
+async function getAllRDVByPatient(req, res) {
+    const patientId = req.params.id;
+    const rdv = await dbConn.getDB().collection(collectionName).find({ patient: patientId });
+    res.json(rdv);
+}
+
 async function createRDV(req, res) {
     const newRDV = req.body;
     newRDV.patientId = req.params.patientId
@@ -40,6 +46,7 @@ async function deleteRDV(req, res) {
 
 module.exports = {
     getAllRDV,
+    getAllRDVByPatient,
     getRDVById,
     createRDV,
     updateRDV,
