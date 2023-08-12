@@ -9,7 +9,7 @@ const rdvRoute = require('./route/rdvRoute');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 
 app.use('/patient', patientRoute);
 app.use('/rdv', rdvRoute);
