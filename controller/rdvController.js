@@ -13,7 +13,7 @@ async function getAllRDV(req, res) {
 
 async function getRDVById(req, res) {
     const RDVId = req.params.id;
-    const rdv = await dbConn.getDB().collection(collectionName).find({ _id: RDVId });
+    const rdv = await dbConn.getDB().collection(collectionName).findOne({ _id: RDVId });
     res.json(rdv);
 }
 

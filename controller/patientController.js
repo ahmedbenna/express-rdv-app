@@ -121,45 +121,46 @@ async function find(req, res) {
 // }
 
 
+
 async function createPatient(req, res) {
   const newPatient = req.body;
-  const p = await dbConn.getDB().collection(collectionName).find({ email: newPatient.email })
-  const a = await dbConn.getDB().collection(collectionName).find({ phone: newPatient.phone })
-  const c = await dbConn.getDB().collection(collectionName).find({ cin: newPatient.cin })
-  console.log("aaa", p)
+  // const p = await dbConn.getDB().collection(collectionName).find({ email: newPatient.email })
+  // const a = await dbConn.getDB().collection(collectionName).find({ phone: newPatient.phone })
+  // const c = await dbConn.getDB().collection(collectionName).find({ cin: newPatient.cin })
+  // console.log("aaa", p)
 
-  if (p) {
-    res.status(422).json({ message: 'email is taken' })
-  } else if (a) {
-    res.status(422).send("Phone number is taken")
-  } else if (c) {
-    res.status(422).send("Cin number is taken")
-  } else {
-    const patient = {
-      email: req.body.email,
-      password: Bcrypt.hashSync(req.body.password, 10),
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      phone: req.body.phone,
-      cin: req.body.cin,
-      description: req.body.description
-    }
-    const result = await dbConn.getDB().collection(collectionName).insertOne(patient);
-    const token = JsonWebToken.sign({ id: user._id, email: user.email }, SECRET_JWT_CODE)
-    res.json({ success: true, token: token })
-    // res.json({ message: 'patient added successfully', result: result, user: req.body });
-
-    // Database.User.create({
-    //   email: req.body.email,
-    //   password: Bcrypt.hashSync(req.body.password, 10),
-    // }).then((user) => {
-    //   const token = JsonWebToken.sign({ id: user._id, email: user.email }, SECRET_JWT_CODE)
-    //   res.json({ success: true, token: token })
-    // }).catch((err) => {
-    //   res.json({ success: false, error: err })
-    // })
-
+  // if (p) {
+  //   res.status(422).json({ message: 'email is taken' })
+  // } else if (a) {
+  //   res.status(422).send("Phone number is taken")
+  // } else if (c) {
+  //   res.status(422).send("Cin number is taken")
+  // } else {
+  const patient = {
+    email: req.body.email,
+    password: Bcrypt.hashSync(req.body.password, 10),
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    phone: req.body.phone,
+    cin: req.body.cin,
+    description: req.body.description
   }
+  const result = await dbConn.getDB().collection(collectionName).insertOne(patient);
+  const token = JsonWebToken.sign({ id: result._id, email: result.email }, SECRET_JWT_CODE)
+  res.json({ success: true, token: token })
+  // res.json({ message: 'patient added successfully', result: result, user: req.body });
+
+  // Database.User.create({
+  //   email: req.body.email,
+  //   password: Bcrypt.hashSync(req.body.password, 10),
+  // }).then((user) => {
+  //   const token = JsonWebToken.sign({ id: user._id, email: user.email }, SECRET_JWT_CODE)
+  //   res.json({ success: true, token: token })
+  // }).catch((err) => {
+  //   res.json({ success: false, error: err })
+  // })
+
+  // }
 
 }
 
@@ -177,6 +178,7 @@ async function deletePatient(req, res) {
 }
 
 module.exports = {
+  // loginPatient,
   find,
   getAllPatients,
   getPatientById,
