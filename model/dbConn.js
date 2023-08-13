@@ -25,5 +25,4 @@ module.exports = {
   connect,
   getDB
 };
-// exports.db = db
 

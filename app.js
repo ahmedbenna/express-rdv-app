@@ -1,6 +1,7 @@
 const express = require('express');
 require('dotenv').config()
 const bodyParser = require('body-parser');
+
 const db = require('./model/dbConn');
 const patientRoute = require('./route/patientRoute');
 const rdvRoute = require('./route/rdvRoute');
