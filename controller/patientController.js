@@ -1,10 +1,9 @@
 const { ObjectId } = require('mongodb')
-const dbConn = require('../model/dbConn');
+const dbConn = require('../config/dbConn');
 
 const JsonWebToken = require('jsonwebtoken');
 const Bcrypt = require('bcryptjs')
 
-// const db = dbConn.getDB()
 const SECRET_JWT_CODE = process.env.SECRET_JWT_CODE;
 const collectionName = 'patient';
 
@@ -15,9 +14,9 @@ async function getAllPatients(req, res) {
 
 async function getPatientById(req, res) {
   const patientId = req.params.id;
-  var id = new ObjectId(patientId);
-  const patient = await dbConn.getDB().collection(collectionName).findOne({ _id: id });
-  console.log("res", patient.result)
+  console.log("dd",patientId)
+  const patient = await dbConn.getDB().collection(collectionName).find({ _id:patientId });
+  console.log("res", patient)
   res.json(patient);
 }
 

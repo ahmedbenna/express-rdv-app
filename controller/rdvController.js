@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongodb');
-const dbConn = require('../model/dbConn');
+const dbConn = require('../config/dbConn');
 
 // const db = dbConn.getDB()
 

@@ -1,4 +1,4 @@
-const dbConn = require('../model/dbConn');
+const dbConn = require('../config/dbConn');
 
 
 const collectionName = 'secretary';
