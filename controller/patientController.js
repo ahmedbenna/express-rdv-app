@@ -14,9 +14,8 @@ async function getAllPatients(req, res) {
 
 async function getPatientById(req, res) {
   const patientId = req.params.id;
-  console.log("dd",patientId)
-  const patient = await dbConn.getDB().collection(collectionName).find({ _id:patientId });
-  console.log("res", patient)
+  var id = new ObjectId(patientId);
+  const patient = await dbConn.getDB().collection(collectionName).findOne({ _id: id });
   res.json(patient);
 }
 
@@ -166,13 +165,15 @@ async function createPatient(req, res) {
 async function updatePatient(req, res) {
   const patientId = req.params.id;
   const updatePatient = req.body;
-  await dbConn.getDB().collection(collectionName).updateOne({ _id: patientId }, { $set: updatePatient });
+  var id = new ObjectId(patientId);
+  await dbConn.getDB().collection(collectionName).updateOne({ _id: id }, { $set: updatePatient });
   res.json({ message: 'patient updated successfully' });
 }
 
 async function deletePatient(req, res) {
   const patientId = req.params.id;
-  await dbConn.getDB().collection(collectionName).deleteOne({ _id: patientId });
+  var id = new ObjectId(patientId);
+  await dbConn.getDB().collection(collectionName).deleteOne({ _id: id });
   res.json({ message: 'patient deleted successfully' });
 }
 

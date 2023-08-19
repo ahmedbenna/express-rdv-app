@@ -1,37 +1,43 @@
-const bcrypt = require('bcrypt');
+const Bcrypt = require('bcryptjs')
 
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+
+const collectionName = 'user';
+const dbConn = require('../config/dbConn');
+const { ObjectId } = require('mongodb');
+
 const handleLogin = async (req, res) => {
-    const { user, pwd } = req.body;
-    if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
-    const foundUser = usersDB.users.find(person => person.username === user);
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ 'message': 'Email and password are required.' });
+    const users = await dbConn.getDB().collection(collectionName).find().toArray();
+    const foundUser = users.find(person => person.email === email);
     if (!foundUser) return res.sendStatus(401); //Unauthorized 
-    // evaluate password 
-    const match = await bcrypt.compare(pwd, foundUser.password);
+
+    const match = await Bcrypt.compareSync(password, foundUser.password);
     if (match) {
-        // create JWTs
+
         const accessToken = jwt.sign(
-            { "username": foundUser.username },
+            { "email": foundUser.email },
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '30s' }
         );
         const refreshToken = jwt.sign(
-            { "username": foundUser.username },
+            { "email": foundUser.email },
             process.env.REFRESH_TOKEN_SECRET,
             { expiresIn: '1d' }
         );
-        // Saving refreshToken with current user
-        const otherUsers = usersDB.users.filter(person => person.username !== foundUser.username);
+        const id = new ObjectId(foundUser._id)
         const currentUser = { ...foundUser, refreshToken };
-        usersDB.setUsers([...otherUsers, currentUser]);
-        await fsPromises.writeFile(
-            path.join(__dirname, '..', 'model', 'users.json'),
-            JSON.stringify(usersDB.users)
-        );
-        res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 });
-        res.json({ accessToken });
+        try{
+            const result = await dbConn.getDB().collection('token').insertOne(currentUser);
+            res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 });
+            res.json({ accessToken });
+        }
+        catch(e){
+            res.status(500).json(e)
+        }
     } else {
         res.sendStatus(401);
     }

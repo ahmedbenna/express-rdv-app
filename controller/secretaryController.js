@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const dbConn = require('../config/dbConn');
 
 
@@ -32,7 +33,8 @@ async function loginSecretary(req, res) {
 
 async function getSecretaryById(req, res) {
     const secId = req.params.id;
-    const secretary = await dbConn.getDB().collection(collectionName).find({ _id: secId });
+    var id = new ObjectId(secId);
+    const secretary = await dbConn.getDB().collection(collectionName).find({ _id: id });
     res.json(secretary);
 }
 
@@ -45,8 +47,7 @@ async function createSecretary(req, res) {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         phone: req.body.phone,
-        cin: req.body.cin,
-        description: req.body.description
+      
     }
     const result = await dbConn.getDB().collection(collectionName).insertOne(secretary);
     const token = JsonWebToken.sign({ id: result._id, email: result.email }, SECRET_JWT_CODE)
@@ -57,13 +58,15 @@ async function createSecretary(req, res) {
 async function updateSecretary(req, res) {
     const secId = req.params.id;
     const updateSecretary = req.body;
-    await dbConn.getDB().collection(collectionName).updateOne({ _id: secId }, { $set: updateSecretary });
+    var id = new ObjectId(secId);
+    await dbConn.getDB().collection(collectionName).updateOne({ _id: id }, { $set: updateSecretary });
     res.json({ message: 'secretary updated successfully' });
 }
 
 async function deleteSecretary(req, res) {
     const secId = req.params.id;
-    await dbConn.getDB().collection(collectionName).deleteOne({ _id: secId });
+    var id = new ObjectId(secId);
+    await dbConn.getDB().collection(collectionName).deleteOne({ _id: id });
     res.json({ message: 'secretary deleted successfully' });
 }
 

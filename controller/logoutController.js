@@ -1,28 +1,23 @@
 
+const { ObjectId } = require('mongodb');
+const dbConn = require('../config/dbConn');
 
 const handleLogout = async (req, res) => {
-    // On client, also delete the accessToken
 
     const cookies = req.cookies;
-    if (!cookies?.jwt) return res.sendStatus(204); //No content
+    if (!cookies?.jwt) return res.sendStatus(204); 
     const refreshToken = cookies.jwt;
 
-    // Is refreshToken in db?
-    const foundUser = usersDB.users.find(person => person.refreshToken === refreshToken);
+    const users = await dbConn.getDB().collection('token').find().toArray();
+    const foundUser = users.find(person => person.refreshToken === refreshToken);
     if (!foundUser) {
         res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
         return res.sendStatus(204);
     }
 
-    // Delete refreshToken in db
-    const otherUsers = usersDB.users.filter(person => person.refreshToken !== foundUser.refreshToken);
-    const currentUser = { ...foundUser, refreshToken: '' };
-    usersDB.setUsers([...otherUsers, currentUser]);
-    await fsPromises.writeFile(
-        path.join(__dirname, '..', 'model', 'users.json'),
-        JSON.stringify(usersDB.users)
-    );
-
+    var id = new ObjectId(foundUser._id);
+    await dbConn.getDB().collection('token').deleteOne({ _id: id });
+    
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
     res.sendStatus(204);
 }
