@@ -29,15 +29,12 @@ const handleLogin = async (req, res) => {
             { expiresIn: '1d' }
         );
         const id = new ObjectId(foundUser._id)
-        const currentUser = { ...foundUser, refreshToken };
-        try{
-            const result = await dbConn.getDB().collection('token').insertOne(currentUser);
-            res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 });
-            res.json({ accessToken });
-        }
-        catch(e){
-            res.status(500).json(e)
-        }
+        const result = await dbConn.getDB().collection('token').insertOne({'email': foundUser.email, 'refreshToken': refreshToken });
+        console.log({'email': foundUser.email, 'refreshToken': refreshToken })
+        res.cookie('jwt', refreshToken);
+        res.json({ accessToken });
+
+
     } else {
         res.sendStatus(401);
     }

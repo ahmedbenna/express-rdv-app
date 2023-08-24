@@ -122,18 +122,7 @@ async function find(req, res) {
 
 async function createPatient(req, res) {
   const newPatient = req.body;
-  // const p = await dbConn.getDB().collection(collectionName).find({ email: newPatient.email })
-  // const a = await dbConn.getDB().collection(collectionName).find({ phone: newPatient.phone })
-  // const c = await dbConn.getDB().collection(collectionName).find({ cin: newPatient.cin })
-  // console.log("aaa", p)
 
-  // if (p) {
-  //   res.status(422).json({ message: 'email is taken' })
-  // } else if (a) {
-  //   res.status(422).send("Phone number is taken")
-  // } else if (c) {
-  //   res.status(422).send("Cin number is taken")
-  // } else {
   const patient = {
     email: req.body.email,
     password: Bcrypt.hashSync(req.body.password, 10),
@@ -144,22 +133,7 @@ async function createPatient(req, res) {
     description: req.body.description
   }
   const result = await dbConn.getDB().collection(collectionName).insertOne(patient);
-  const token = JsonWebToken.sign({ id: result._id, email: result.email }, SECRET_JWT_CODE)
-  res.json({ success: true, token: token })
-  // res.json({ message: 'patient added successfully', result: result, user: req.body });
-
-  // Database.User.create({
-  //   email: req.body.email,
-  //   password: Bcrypt.hashSync(req.body.password, 10),
-  // }).then((user) => {
-  //   const token = JsonWebToken.sign({ id: user._id, email: user.email }, SECRET_JWT_CODE)
-  //   res.json({ success: true, token: token })
-  // }).catch((err) => {
-  //   res.json({ success: false, error: err })
-  // })
-
-  // }
-
+  res.json({ success: true, result: result })
 }
 
 async function updatePatient(req, res) {
@@ -171,14 +145,17 @@ async function updatePatient(req, res) {
 }
 
 async function deletePatient(req, res) {
-  const patientId = req.params.id;
-  var id = new ObjectId(patientId);
+  var id = new ObjectId(req.params.id);
+  try {
+    await dbConn.getDB().collection('rdv').deleteMany({ "patient._id" : "id" });
+  } catch (e) {
+    console.log(e);
+  }
   await dbConn.getDB().collection(collectionName).deleteOne({ _id: id });
   res.json({ message: 'patient deleted successfully' });
 }
 
 module.exports = {
-  // loginPatient,
   find,
   getAllPatients,
   getPatientById,

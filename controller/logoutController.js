@@ -12,12 +12,12 @@ const handleLogout = async (req, res) => {
     const foundUser = users.find(person => person.refreshToken === refreshToken);
     if (!foundUser) {
         res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
-        return res.sendStatus(204);
+        return res.status(204).json({'mess':'sds'});
     }
 
     var id = new ObjectId(foundUser._id);
     await dbConn.getDB().collection('token').deleteOne({ _id: id });
-    
+
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
     res.sendStatus(204);
 }
