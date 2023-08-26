@@ -125,7 +125,7 @@ async function createPatient(req, res) {
 
   const patient = {
     email: req.body.email,
-    password: Bcrypt.hashSync(req.body.password, 10),
+    // password: Bcrypt.hashSync(req.body.password, 10),
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     phone: req.body.phone,
@@ -139,6 +139,7 @@ async function createPatient(req, res) {
 async function updatePatient(req, res) {
   const patientId = req.params.id;
   const updatePatient = req.body;
+  delete updatePatient._id;
   var id = new ObjectId(patientId);
   await dbConn.getDB().collection(collectionName).updateOne({ _id: id }, { $set: updatePatient });
   res.json({ message: 'patient updated successfully' });
@@ -147,7 +148,8 @@ async function updatePatient(req, res) {
 async function deletePatient(req, res) {
   var id = new ObjectId(req.params.id);
   try {
-    await dbConn.getDB().collection('rdv').deleteMany({ "patient._id" : "id" });
+    const result = await dbConn.getDB().collection('rdv').deleteMany({ "patient._id ": id });
+    console.log('reeeee',result)
   } catch (e) {
     console.log(e);
   }

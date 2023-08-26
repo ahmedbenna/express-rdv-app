@@ -27,7 +27,7 @@ async function getAllRDVByPatient(req, res) {
 
 async function createRDV(req, res) {
     const newRDV = req.body;
-    var id = new ObjectId(req.params.patientId);
+    var id = new ObjectId(req.params.idPatient);
     newRDV.patient = await dbConn.getDB().collection('patient').findOne({ _id: id });
     newRDV.dateOfAdding = new Date()
     const result = await dbConn.getDB().collection(collectionName).insertOne(newRDV);
@@ -43,7 +43,8 @@ async function updateRDV(req, res) {
 
 async function deleteRDV(req, res) {
     const RDVId = req.params.id;
-    await dbConn.getDB().collection(collectionName).deleteOne({ _id: ObjectId(RDVId) });
+    var id = new ObjectId(RDVId);
+    await dbConn.getDB().collection(collectionName).deleteOne({ _id: id });
     res.json({ message: 'RDV deleted successfully' });
 }
 

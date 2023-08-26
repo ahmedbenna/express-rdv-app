@@ -13,30 +13,35 @@ const handleLogin = async (req, res) => {
     if (!email || !password) return res.status(400).json({ 'message': 'Email and password are required.' });
     const users = await dbConn.getDB().collection(collectionName).find().toArray();
     const foundUser = users.find(person => person.email === email);
-    if (!foundUser) return res.sendStatus(401); //Unauthorized 
-
+    if (!foundUser) return res.sendStatus(400);
     const match = await Bcrypt.compareSync(password, foundUser.password);
     if (match) {
 
         const accessToken = jwt.sign(
-            { "email": foundUser.email },
+            {
+                "email": foundUser.email,
+                "role": foundUser.role
+            },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '30s' }
+            { expiresIn: '5m' }
         );
         const refreshToken = jwt.sign(
-            { "email": foundUser.email },
+            {
+                "email": foundUser.email,
+                "role": foundUser.role
+            },
             process.env.REFRESH_TOKEN_SECRET,
             { expiresIn: '1d' }
         );
         const id = new ObjectId(foundUser._id)
-        const result = await dbConn.getDB().collection('token').insertOne({'email': foundUser.email, 'refreshToken': refreshToken });
-        console.log({'email': foundUser.email, 'refreshToken': refreshToken })
+        const result = await dbConn.getDB().collection('token').insertOne({ 'email': foundUser.email, 'refreshToken': refreshToken });
+        console.log({ 'email': foundUser.email, 'refreshToken': refreshToken })
         res.cookie('jwt', refreshToken);
         res.json({ accessToken });
 
 
     } else {
-        res.sendStatus(401);
+        res.sendStatus(400);
     }
 }
 

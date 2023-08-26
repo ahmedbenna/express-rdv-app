@@ -14,25 +14,21 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Handle options credentials check - before CORS!
-// and fetch cookies credentials requirement
 app.use(credentials);
 
-// Cross Origin Resource Sharing
 app.use(cors(corsOptions));
 
-//middleware for cookies
 app.use(cookieParser());
-
 
 app.use(bodyParser.json())
 
-app.use('/register', require('./route/register'));
 app.use('/auth', require('./route/auth'));
-app.use('/refresh', require('./route/refresh'));
 app.use('/logout', require('./route/logout'));
 
-// app.use(verifyJWT);
+app.use(verifyJWT);
+app.use('/register', require('./route/register'));
+app.use('/refresh', require('./route/refresh'));
+
 app.use('/patient', patientRoute);
 app.use('/rdv', rdvRoute);
 app.use('/secretary', secretaryRoute);
