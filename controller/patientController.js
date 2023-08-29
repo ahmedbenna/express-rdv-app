@@ -146,7 +146,7 @@ async function updatePatient(req, res) {
 }
 
 async function deletePatient(req, res) {
-  var id = new ObjectId(req.params.id);
+  var id = req.params.id
   try {
     const result = await dbConn.getDB().collection('rdv').deleteMany({ "patient._id ": id });
     console.log('reeeee',result)

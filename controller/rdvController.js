@@ -44,7 +44,7 @@ async function updateRDV(req, res) {
 async function deleteRDV(req, res) {
     const RDVId = req.params.id;
     var id = new ObjectId(RDVId);
-    await dbConn.getDB().collection(collectionName).deleteOne({ _id: id });
+    await dbConn.getDB().collection(collectionName).deleteOne({ "_id": id });
     res.json({ message: 'RDV deleted successfully' });
 }
 
