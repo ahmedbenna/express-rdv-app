@@ -15,7 +15,7 @@ async function getAllOldRDV(req, res) {
     const RDVs = await dbConn.getDB().collection(collectionName).find({
         date:
         {
-            $lt: ISODate(new Date())
+            $lt: new Date()
         }
     }).toArray();
     res.json(RDVs);
@@ -24,7 +24,7 @@ async function getAllPendingRDV(req, res) {
     const RDVs = await dbConn.getDB().collection(collectionName).find({
         date:
         {
-            $gt: ISODate(new Date())
+            $gt: new Date()
         }
     }).toArray();
     res.json(RDVs);
