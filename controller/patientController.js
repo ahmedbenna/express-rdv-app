@@ -123,7 +123,10 @@ async function find(req, res) {
 async function createPatient(req, res) {
   const newPatient = req.body;
 
-  const patient = {
+  const patient = new Patient(req.body)
+
+  
+  /*{
     email: req.body.email,
     // password: Bcrypt.hashSync(req.body.password, 10),
     firstName: req.body.firstName,
@@ -131,7 +134,7 @@ async function createPatient(req, res) {
     phone: req.body.phone,
     cin: req.body.cin,
     description: req.body.description
-  }
+  }*/
   const result = await dbConn.getDB().collection(collectionName).insertOne(patient);
   res.json({ success: true, result: result })
 }

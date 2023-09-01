@@ -19,22 +19,22 @@ const handleLogin = async (req, res) => {
 
         const accessToken = jwt.sign(
             {
-                "email": foundUser.email,
+                "id":new ObjectId(foundUser._id),
                 "role": foundUser.role
             },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '5m' }
+            { expiresIn: '1d' }
         );
         const refreshToken = jwt.sign(
             {
-                "email": foundUser.email,
+                "id":new ObjectId(foundUser._id),
                 "role": foundUser.role
             },
             process.env.REFRESH_TOKEN_SECRET,
-            { expiresIn: '1d' }
+            { expiresIn: '30d' }
         );
         const id = new ObjectId(foundUser._id)
-        const result = await dbConn.getDB().collection('token').insertOne({ 'email': foundUser.email, 'refreshToken': refreshToken });
+        const result = await dbConn.getDB().collection('token').insertOne({ "id": new ObjectId(foundUser._id), 'refreshToken': refreshToken });
         console.log({ 'email': foundUser.email, 'refreshToken': refreshToken })
         res.cookie('jwt', refreshToken);
         res.json({ accessToken });
