@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongodb');
 const dbConn = require('../config/dbConn');
+const { date } = require('joi');
 
 // const db = dbConn.getDB()
 
@@ -8,6 +9,24 @@ const collectionName = 'rdv';
 
 async function getAllRDV(req, res) {
     const RDVs = await dbConn.getDB().collection(collectionName).find().toArray();
+    res.json(RDVs);
+}
+async function getAllOldRDV(req, res) {
+    const RDVs = await dbConn.getDB().collection(collectionName).find({
+        date:
+        {
+            $lt: ISODate(new Date())
+        }
+    }).toArray();
+    res.json(RDVs);
+}
+async function getAllPendingRDV(req, res) {
+    const RDVs = await dbConn.getDB().collection(collectionName).find({
+        date:
+        {
+            $gt: ISODate(new Date())
+        }
+    }).toArray();
     res.json(RDVs);
 }
 
@@ -49,6 +68,8 @@ async function deleteRDV(req, res) {
 }
 
 module.exports = {
+    getAllOldRDV,
+    getAllPendingRDV,
     getAllRDV,
     getAllRDVByPatient,
     getRDVById,

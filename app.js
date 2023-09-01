@@ -26,12 +26,14 @@ app.use('/auth', require('./route/auth'));
 app.use('/logout', require('./route/logout'));
 
 // app.use(verifyJWT);
-app.use('/register', require('./route/register'));
 app.use('/refresh', require('./route/refresh'));
 
 app.use('/patient', patientRoute);
 app.use('/rdv', rdvRoute);
 app.use('/secretary', secretaryRoute);
+
+app.use('/register', require('./route/register'));
+
 
 
 

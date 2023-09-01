@@ -12,7 +12,7 @@ const verifyJWT = (req, res, next) => {
         (err, decoded) => {
             if (err) return res.sendStatus(403); //invalid token
             // console.log('token decoded',decoded)
-            req.user = decoded.email;
+            req.user = decoded.id;
             next();
         }
     );
