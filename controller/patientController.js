@@ -144,6 +144,7 @@ async function updatePatient(req, res) {
   const patientId = req.params.id;
   const updatePatient = req.body;
   delete updatePatient._id;
+  patientValid.validatePatient(updatePatient,res);
   var id = new ObjectId(patientId);
   await dbConn.getDB().collection(collectionName).updateOne({ _id: id }, { $set: updatePatient });
   res.json({ message: 'patient updated successfully' });
@@ -152,7 +153,7 @@ async function updatePatient(req, res) {
 async function deletePatient(req, res) {
   var id = req.params.id
   try {
-    const result = await dbConn.getDB().collection('rdv').deleteMany({ "patient._id ": id });
+    const result = await dbConn.getDB().collection('rdv').deleteMany({ "patient._id ": new ObjectId(id) });
     console.log('reeeee',result)
   } catch (e) {
     console.log(e);

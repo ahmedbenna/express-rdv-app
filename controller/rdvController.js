@@ -1,6 +1,5 @@
 const { ObjectId } = require('mongodb');
 const dbConn = require('../config/dbConn');
-const { date } = require('joi');
 
 // const db = dbConn.getDB()
 
@@ -12,22 +11,29 @@ async function getAllRDV(req, res) {
     res.json(RDVs);
 }
 async function getAllOldRDV(req, res) {
-    const RDVs = await dbConn.getDB().collection(collectionName).find({
-        date:
-        {
-            $lt: new Date()
+    const RDVs = await dbConn.getDB().collection(collectionName).find().toArray();
+    let oldRdv = [];
+    d = new Date()
+
+    for (let i = 0; i < RDVs.length; ++i) {
+        if (d.getTime() > new Date(RDVs[i].date).getTime()) {
+            oldRdv.push(RDVs[i])
         }
-    }).toArray();
-    res.json(RDVs);
+    }
+    res.send(oldRdv)
 }
 async function getAllPendingRDV(req, res) {
-    const RDVs = await dbConn.getDB().collection(collectionName).find({
-        date:
-        {
-            $gt: new Date()
+    const RDVs = await dbConn.getDB().collection(collectionName).find().toArray();
+    let pendingRdv = [];
+    d = new Date()
+
+    for (let i = 0; i < RDVs.length; ++i) {
+        if (d.getTime() < new Date(RDVs[i].date).getTime()) {
+            pendingRdv.push(RDVs[i])
         }
-    }).toArray();
-    res.json(RDVs);
+    }
+    res.send(pendingRdv)
+
 }
 
 async function getRDVById(req, res) {
@@ -39,9 +45,9 @@ async function getRDVById(req, res) {
 }
 
 async function getAllRDVByPatient(req, res) {
-    const patientId = req.params.id;
-    const rdv = await dbConn.getDB().collection(collectionName).find({ patient: patientId });
-    res.json(rdv);
+    const patientId = req.params.idPatient;
+    const RDVs = await dbConn.getDB().collection(collectionName).find({"patient._id": new ObjectId(patientId)}).toArray();
+    res.json(RDVs);
 }
 
 async function createRDV(req, res) {
