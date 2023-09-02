@@ -20,8 +20,16 @@ async function getPatientById(req, res) {
 }
 
 async function find(req, res) {
-  const patient = req.params.patient;
-  const patientRes = await dbConn.getDB().collection(collectionName).find({ $text: { $search: toString(patient) } }).toArray()
+  const patient = String(req.params.patient);
+  await dbConn.getDB().collection(collectionName).createIndex({
+    email: "text",
+    firstName: "text",
+    lastName: "text",
+    phone: "text",
+    cin: "text",
+    description: "text",
+  })
+  const patientRes = await dbConn.getDB().collection(collectionName).find({ $text: { $search: patient } }).toArray()
   res.json(patientRes);
 }
 
@@ -124,10 +132,10 @@ async function createPatient(req, res) {
   const newPatient = req.body;
 
   // const patient = new Patient(req.body)
-  patientValid.validatePatient(req.body,res);
+  patientValid.validatePatient(req.body, res);
 
 
-  const patient = 
+  const patient =
   {
     email: req.body.email,
     firstName: req.body.firstName,
@@ -144,7 +152,7 @@ async function updatePatient(req, res) {
   const patientId = req.params.id;
   const updatePatient = req.body;
   delete updatePatient._id;
-  patientValid.validatePatient(updatePatient,res);
+  patientValid.validatePatient(updatePatient, res);
   var id = new ObjectId(patientId);
   await dbConn.getDB().collection(collectionName).updateOne({ _id: id }, { $set: updatePatient });
   res.json({ message: 'patient updated successfully' });
@@ -154,11 +162,11 @@ async function deletePatient(req, res) {
   var id = req.params.id
   try {
     const result = await dbConn.getDB().collection('rdv').deleteMany({ "patient._id ": new ObjectId(id) });
-    console.log('reeeee',result)
+    console.log('reeeee', result)
   } catch (e) {
     console.log(e);
   }
-  await dbConn.getDB().collection(collectionName).deleteOne({ _id: new ObjectId(id)  });
+  await dbConn.getDB().collection(collectionName).deleteOne({ _id: new ObjectId(id) });
   res.json({ message: 'patient deleted successfully' });
 }
 
