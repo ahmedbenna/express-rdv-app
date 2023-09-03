@@ -2,10 +2,8 @@ const { ObjectId } = require('mongodb');
 const dbConn = require('../config/dbConn');
 const RDVCreated = require('../mailer/sendMail');
 
-// const db = dbConn.getDB()
 
 const collectionName = 'rdv';
-// console.log ("eeeeee",db)
 
 async function getAllRDV(req, res) {
     const RDVs = await dbConn.getDB().collection(collectionName).find().toArray();

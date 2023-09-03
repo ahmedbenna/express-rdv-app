@@ -1,10 +1,6 @@
 const { ObjectId } = require('mongodb')
 const dbConn = require('../config/dbConn');
-
-const JsonWebToken = require('jsonwebtoken');
-const Bcrypt = require('bcryptjs')
 const patientValid = require('../model/patient')
-const SECRET_JWT_CODE = process.env.SECRET_JWT_CODE;
 const collectionName = 'patient';
 
 async function getAllPatients(req, res) {
