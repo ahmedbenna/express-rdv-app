@@ -25,7 +25,7 @@ app.use(bodyParser.json())
 app.use('/auth', require('./route/auth'));
 app.use('/logout', require('./route/logout'));
 
-// app.use(verifyJWT);
+app.use(verifyJWT);
 app.use('/refresh', require('./route/refresh'));
 
 app.use('/patient', patientRoute);

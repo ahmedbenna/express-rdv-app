@@ -35,7 +35,7 @@ const handleLogin = async (req, res) => {
         );
         const id = new ObjectId(foundUser._id)
         const result = await dbConn.getDB().collection('token').insertOne({ "id": new ObjectId(foundUser._id), 'refreshToken': refreshToken });
-        console.log({ 'email': foundUser.email, 'refreshToken': refreshToken })
+        console.log({ "id":foundUser._id, "role": foundUser.role, 'refreshToken': refreshToken })
         res.cookie('jwt', refreshToken);
         res.json({ accessToken });
 
