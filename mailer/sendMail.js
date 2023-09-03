@@ -99,17 +99,16 @@ function rdvNotification(date,rdv) {
         subject: "Reminder your RDV is TOMORROW ",
         html: mail
     }
-     transporter.sendMail(message).then((info) => {
-        console.log("Message sent: %s", info.messageId)
-
-    }
-    ).catch(e => {
-        console.log("err: %s", e)
-
-    })
+    
     const job = schedule.scheduleJob(date, function () {
-        console.log('The world is going to end today.');
-    });
+        transporter.sendMail(message).then((info) => {
+            console.log("Message sent: %s", info.messageId)
+    
+        }
+        ).catch(e => {
+            console.log("err: %s", e)
+    
+        })    });
 
 }
 // module.exports = rdvNotification;
