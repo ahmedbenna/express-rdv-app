@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongodb');
 const dbConn = require('../config/dbConn');
+const RDVCreated = require('../mailer/sendMail');
 
 // const db = dbConn.getDB()
 
@@ -55,8 +56,9 @@ async function createRDV(req, res) {
     var id = new ObjectId(req.params.idPatient);
     newRDV.patient = await dbConn.getDB().collection('patient').findOne({ _id: id });
     newRDV.dateOfAdding = new Date()
+    await RDVCreated(newRDV,res)
     const result = await dbConn.getDB().collection(collectionName).insertOne(newRDV);
-    res.json({ message: 'RDV added successfully', rdv: req.body });
+    // res.json({ message: 'RDV added successfully', rdv: req.body });
 }
 
 async function updateRDV(req, res) {

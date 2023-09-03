@@ -7,7 +7,7 @@ let patientSchema = Joi.object({
     firstName: Joi.string().min(3).max(50).required(),
     lastName: Joi.string().min(3).max(50).required(),
     email: Joi.string().email().required(),
-    birthday: Joi.date().max(d).required(),
+    birthday: Joi.date().max(d),
     cin: Joi.string().length(8).required(),
     phone: Joi.number().min(10000000).max(99999999).required(),
     description: Joi.string()

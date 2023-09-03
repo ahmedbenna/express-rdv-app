@@ -27,7 +27,7 @@ const verifyJWTDoctor = (req, res, next) => {
         token,
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
-            if(decoded.role!="doctor") return res.sendStatus(430);
+            if(decoded.role!="doctor") return res.sendStatus(403);
             if (err) return res.sendStatus(403); //invalid token
             // console.log('token decoded',decoded)
             req.user = decoded.id;
